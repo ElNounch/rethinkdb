@@ -1,10 +1,12 @@
 # Environment
 language: cpp
-#compiler:
-#  - gcc
+sudo: false
+os: linux
+compiler:
+  - gcc
 #  - clang
 env:
-#  - DEBUG=1
+  - DEBUG=1
 #  - DEBUG=0
   
 cache:
@@ -31,7 +33,6 @@ matrix:
     - os: linux
       sudo: false
       compiler: gcc
-      env: DEBUG=1
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -46,7 +47,6 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
-      env: DEBUG=1
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -58,29 +58,29 @@ matrix:
             - libboost-all-dev
             - libjemalloc-dev
     - os: linux
-      sudo: false
-      compiler: gcc
-      env: DEBUG=1
-      # Minimalist packages list
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-    - os: linux
       dist: trusty
       sudo: required
       compiler: gcc
-      env: DEBUG=1
       # Minimalist packages list
       addons:
         apt:
           packages:
             - libncurses5-dev
     - os: osx
+      compiler: clang
 
 before_install:
-  - nvm install stable
-#  - npm install -g npm@2
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      nvm install stable;
+      npm install -g npm@2;
+      fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew update >/dev/null;
+      brew uninstall node;
+      brew install node --without-npm;
+      echo prefix=~/.node >> ~/.npmrc;
+      ( curl -L https://www.npmjs.com/install.sh | sh );
+      fi
 
 # Install build dependencies
 install:
