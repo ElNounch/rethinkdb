@@ -1,13 +1,11 @@
-sudo: false
-
 # Environment
 language: cpp
-compiler:
-  - gcc
-  - clang
+#compiler:
+#  - gcc
+#  - clang
 env:
-  - DEBUG=1
-  - DEBUG=0
+#  - DEBUG=1
+#  - DEBUG=0
   
 cache:
   apt: true
@@ -30,9 +28,11 @@ addons:
 
 matrix:
   include:
-    # Officially documented pre-required packages
-    - compiler: gcc
+    - os: linux
+      sudo: false
+      compiler: gcc
       env: DEBUG=1
+      # Packages list from documentation (2016/01/24)
       addons:
         apt:
           packages:
@@ -42,20 +42,50 @@ matrix:
             - libcurl4-openssl-dev
             - libboost-all-dev
             - libjemalloc-dev
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+      env: DEBUG=1
+      # Packages list from documentation (2016/01/24)
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+            - protobuf-compiler
+            - libprotobuf-dev
+            - libcurl4-openssl-dev
+            - libboost-all-dev
+            - libjemalloc-dev
+    - os: linux
+      sudo: false
+      compiler: gcc
+      env: DEBUG=1
+      # Minimalist packages list
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: gcc
+      env: DEBUG=1
+      # Minimalist packages list
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+    - os: osx
 
 before_install:
   - nvm install stable
-  - npm install -g npm@2
+#  - npm install -g npm@2
 
 # Install build dependencies
 install:
   - ./configure --allow-fetch --ccache
   - make support DEBUG=$DEBUG -j 3
-  # we need a custom ppa for latest boost libs (1.46, which is on
-  # Travis, doesn't work with Clang and C++ 11)
-#  - yes | sudo apt-add-repository ppa:jkeiren/ppa
-#  - sudo apt-get update
-#  - sudo apt-get install libboost1.48-all-dev
 
 # Build script
 script:
