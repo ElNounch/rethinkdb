@@ -28,7 +28,7 @@ before_script:
 #  - npm install -g coffee-script
 #  - npm install -g handlebars
 #  - npm install -g mocha
-  - npm install -g coffee
+#  - npm install -g coffee-script
 
   # we need a custom ppa for latest boost libs (1.46, which is on
   # Travis, doesn't work with Clang and C++ 11)
@@ -38,7 +38,7 @@ before_script:
 
 # Build script
 script:
-  - ./configure
+  - ./configure --allow-fetch
   - make -j 3 test-deps DEBUG=$DEBUG
   - make test TEST=travis RUN_TEST_ARGS='-j3 -w-' DEBUG=$DEBUG
 
