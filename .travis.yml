@@ -18,6 +18,8 @@ cache:
 
 addons:
   apt:
+    sources:
+      - boost-latest
     packages:
       - protobuf-compiler
       - libprotobuf-dev
@@ -32,12 +34,16 @@ before_install:
 
 # Install build dependencies
 install:
-  - ./configure --allow-fetch --ccache
+  # we need a custom ppa for latest boost libs (1.46, which is on
+  # Travis, doesn't work with Clang and C++ 11)
+#  - yes | sudo apt-add-repository ppa:jkeiren/ppa
+#  - sudo apt-get update
+#  - sudo apt-get install libboost1.48-all-dev
 
 # Build script
 script:
-  - make -j 3 test-deps DEBUG=$DEBUG && ./test/run --jobs 3
-#  --verbose
+  - if [ "$DEBUG" = "1" ]; then export VERBOSE="--verbose"; fi
+  - ./configure --allow-fetch --ccache && make -j 3 test-deps DEBUG=$DEBUG && ./test/run --jobs 3 $VERBOSE
 #  - make test TEST=travis RUN_TEST_ARGS='-j3 -w-' DEBUG=$DEBUG
 
 #notifications:
