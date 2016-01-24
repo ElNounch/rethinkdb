@@ -17,6 +17,7 @@ env:
 addons:
     apt:
       packages:
+        # Packages list from documentation (2016/01/24)
         - libncurses5-dev
         - protobuf-compiler
         - libprotobuf-dev
@@ -34,12 +35,14 @@ cache:
 before_install:
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      nvm install stable;
-      npm install -g npm@2;
+      nvm install stable
+      npm install -g npm@2
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew update >/dev/null;
-      brew uninstall node;
-      brew install node;
+      brew update >/dev/null
+      brew uninstall node
+      brew install node --without-npm
+      echo prefix=~/.node >> ~/.npmrc
+      curl -L https://www.npmjs.com/install.sh | sh
     fi
 #      --without-npm;
 #      echo prefix=~/.node >> ~/.npmrc;
@@ -53,7 +56,7 @@ install:
 
 # Build script
 script:
-  - make test-deps DEBUG=$DEBUG -j 3 && ./test/run --jobs 3 --verbose
+  - make test DEBUG=$DEBUG --jobs 3
 
 #notifications:
   # Email commit author only on build status change
