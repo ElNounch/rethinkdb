@@ -9,6 +9,13 @@ env:
   - DEBUG=1
 #  - DEBUG=0
 
+cache:
+  apt: true
+  ccache: true
+  directories:
+    - ~/.npm
+    - ~/npm-cache
+
 addons:
   apt:
     packages:
@@ -22,6 +29,7 @@ addons:
 # Install build dependencies
 before_script:
   - nvm install stable
+  - npm install -g npm@2
 #  - nvm install v0.10.0
 #  - sudo apt-get install npm protobuf-compiler protobuf-c-compiler libprotobuf-dev libv8-dev libgoogle-perftools-dev libprotoc-dev default-jre time
 #  - npm install -g less
