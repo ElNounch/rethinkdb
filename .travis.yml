@@ -21,12 +21,27 @@ addons:
 #    sources:
 #      - boost-latest
     packages:
+      - libncurses5-dev
 #      - protobuf-compiler
 #      - libprotobuf-dev
 #      - libcurl4-openssl-dev
 #      - libboost1.54-all-dev
-      - libncurses5-dev
 #      - libjemalloc-dev
+
+matrix:
+  include:
+    # Officially documented pre-required packages
+    - compiler: gcc
+      env: DEBUG=1
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+            - protobuf-compiler
+            - libprotobuf-dev
+            - libcurl4-openssl-dev
+            - libboost-all-dev
+            - libjemalloc-dev
 
 before_install:
   - nvm install stable
