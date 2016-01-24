@@ -31,28 +31,27 @@ cache:
   directories:
     - ~/.npm
     - ~/npm-cache
+    - $TRAVIS_BUILD_DIR/node_modules
 
 before_install:
   - |
-    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      nvm install stable
-      npm install -g npm@2
-    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       # Install nvm
       git clone https://github.com/creationix/nvm.git ~/.nvm && pushd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && popd
       . ~/.nvm/nvm.sh
-      nvm install stable
-      npm install -g npm@2
     fi
-#      brew update >/dev/null
-#      brew uninstall node
-#      brew install node --without-npm
-#      echo prefix=~/.node >> ~/.npmrc
-#      curl -L https://www.npmjs.com/install.sh | sh
+    # Install latest stable Node.js
+    nvm install stable
+    # Install latest version 2 of npm
+    npm install -g npm@2
 
 # Install build dependencies
 install:
-  - ./configure --allow-fetch --ccache
+  - |
+    if [[ ( "$CC" == "gcc" ) && ( `ccache --version 2>/dev/null` != "" ) ]]; then
+      export CCACHE_OPT=--ccache
+    fi
+    ./configure --allow-fetch $CCACHE_OPT
   - make support DEBUG=$DEBUG -j 3
 
 # Build script
