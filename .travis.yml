@@ -1,34 +1,28 @@
 # Environment
 language: cpp
+sudo: false
+os:
+  - linux
+  - osx
 compiler:
   - gcc
   - clang
 env:
   global:
     - DEBUG=1
+  matrix:
+    - TEST=unit
+    - TEST=!unit
 
 addons:
-  apt:
-    # Packages list from documentation (2016/01/24)
-    - packages:
+    apt:
+      packages:
         - libncurses5-dev
         - protobuf-compiler
         - libprotobuf-dev
         - libcurl4-openssl-dev
         - libboost-all-dev
         - libjemalloc-dev
-    # Minimalist packages list
-    - packages:
-        - libncurses5-dev
-
-matrix:
-  include:
-    - os: linux
-      sudo: false
-    - os: linux
-      sudo: required
-      dist: trusty
-    - os: osx
   
 cache:
   apt: true
