@@ -38,7 +38,9 @@ before_install:
       nvm install stable
       npm install -g npm@2
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+      # Install nvm
+      git clone https://github.com/creationix/nvm.git ~/.nvm && pushd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && popd
+      . ~/.nvm/nvm.sh
       nvm install stable
       npm install -g npm@2
     fi
