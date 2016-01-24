@@ -7,48 +7,27 @@ env:
   global:
     - DEBUG=1
 
+addons:
+  apt:
+    # Packages list from documentation (2016/01/24)
+    - packages:
+        - libncurses5-dev
+        - protobuf-compiler
+        - libprotobuf-dev
+        - libcurl4-openssl-dev
+        - libboost-all-dev
+        - libjemalloc-dev
+    # Minimalist packages list
+    - packages:
+        - libncurses5-dev
+
 matrix:
   include:
     - os: linux
       sudo: false
-      # Packages list from documentation (2016/01/24)
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-            - protobuf-compiler
-            - libprotobuf-dev
-            - libcurl4-openssl-dev
-            - libboost-all-dev
-            - libjemalloc-dev
-    - os: linux
-      sudo: false
-      # Minimalist packages list
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
     - os: linux
       sudo: required
       dist: trusty
-      # Packages list from documentation (2016/01/24)
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-            - protobuf-compiler
-            - libprotobuf-dev
-            - libcurl4-openssl-dev
-            - libboost-all-dev
-            - libjemalloc-dev
-    - os: linux
-      sudo: required
-      dist: trusty
-      # Minimalist packages list
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
     - os: osx
   
 cache:
