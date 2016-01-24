@@ -8,7 +8,7 @@ compiler:
 env:
   - DEBUG=1
   - DEBUG=0
-
+  
 cache:
   apt: true
   ccache: true
@@ -24,7 +24,7 @@ addons:
       - protobuf-compiler
       - libprotobuf-dev
       - libcurl4-openssl-dev
-      - libboost-all-dev
+      - libboost1.54-all-dev
       - libncurses5-dev
       - libjemalloc-dev
 
@@ -34,6 +34,8 @@ before_install:
 
 # Install build dependencies
 install:
+  - ./configure --allow-fetch --ccache
+  - make support DEBUG=$DEBUG -j 3
   # we need a custom ppa for latest boost libs (1.46, which is on
   # Travis, doesn't work with Clang and C++ 11)
 #  - yes | sudo apt-add-repository ppa:jkeiren/ppa
@@ -42,9 +44,7 @@ install:
 
 # Build script
 script:
-  - if [ "$DEBUG" = "1" ]; then export VERBOSE="--verbose"; fi
-  - ./configure --allow-fetch --ccache && make -j 3 test-deps DEBUG=$DEBUG && ./test/run --jobs 3 $VERBOSE
-#  - make test TEST=travis RUN_TEST_ARGS='-j3 -w-' DEBUG=$DEBUG
+  - make test-deps DEBUG=$DEBUG -j 3 && ./test/run --jobs 3
 
 #notifications:
   # Email commit author only on build status change
