@@ -4,10 +4,10 @@ sudo: false
 language: cpp
 compiler:
   - gcc
-#  - clang
+  - clang
 env:
   - DEBUG=1
-#  - DEBUG=0
+  - DEBUG=0
 
 cache:
   apt: true
@@ -26,29 +26,19 @@ addons:
       - libncurses5-dev
       - libjemalloc-dev
 
-# Install build dependencies
-before_script:
+before_install:
   - nvm install stable
   - npm install -g npm@2
-#  - nvm install v0.10.0
-#  - sudo apt-get install npm protobuf-compiler protobuf-c-compiler libprotobuf-dev libv8-dev libgoogle-perftools-dev libprotoc-dev default-jre time
-#  - npm install -g less
-#  - npm install -g coffee-script
-#  - npm install -g handlebars
-#  - npm install -g mocha
-#  - npm install -g coffee-script
 
-  # we need a custom ppa for latest boost libs (1.46, which is on
-  # Travis, doesn't work with Clang and C++ 11)
-#  - yes | sudo apt-add-repository ppa:jkeiren/ppa
-#  - sudo apt-get update
-#  - sudo apt-get install libboost1.48-all-dev
+# Install build dependencies
+install:
+  - ./configure --allow-fetch --ccache
 
 # Build script
 script:
-  - ./configure --allow-fetch
-  - make -j 3 test-deps DEBUG=$DEBUG
-  - make test TEST=travis RUN_TEST_ARGS='-j3 -w-' DEBUG=$DEBUG
+  - make -j 3 test-deps DEBUG=$DEBUG && ./test/run --jobs 3
+#  --verbose
+#  - make test TEST=travis RUN_TEST_ARGS='-j3 -w-' DEBUG=$DEBUG
 
 #notifications:
   # Email commit author only on build status change
