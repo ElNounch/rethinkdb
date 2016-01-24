@@ -2,10 +2,10 @@
 language: cpp
 sudo: false
 os:
-  - linux
+#  - linux
   - osx
 compiler:
-  - gcc
+#  - gcc
   - clang
 env:
   global:
@@ -38,16 +38,15 @@ before_install:
       nvm install stable
       npm install -g npm@2
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-      brew update >/dev/null
-      brew uninstall node
-      brew install node --without-npm
-      echo prefix=~/.node >> ~/.npmrc
-      curl -L https://www.npmjs.com/install.sh | sh
+      curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
+      nvm install stable
+      npm install -g npm@2
     fi
-#      --without-npm;
-#      echo prefix=~/.node >> ~/.npmrc;
-#      ( curl -L https://www.npmjs.com/install.sh | sh );
-#      fi
+#      brew update >/dev/null
+#      brew uninstall node
+#      brew install node --without-npm
+#      echo prefix=~/.node >> ~/.npmrc
+#      curl -L https://www.npmjs.com/install.sh | sh
 
 # Install build dependencies
 install:
@@ -56,7 +55,7 @@ install:
 
 # Build script
 script:
-  - make test DEBUG=$DEBUG --jobs 3
+  - make test-deps DEBUG=$DEBUG --jobs 3 && make test
 
 #notifications:
   # Email commit author only on build status change
