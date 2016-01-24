@@ -1,17 +1,57 @@
 # Environment
 language: cpp
-sudo: false
-os: linux
-compiler:
-  - gcc
-#  - clang
 env:
   global:
-    - DESCRIPTION="Ubuntu (Precise) / Gcc / External libraries"
     - DEBUG=1
-  matrix:
-#    - DEBUG=1
-#    - DEBUG=0
+
+matrix:
+  include:
+    - os: linux
+      sudo: false
+      compiler: gcc
+      # Packages list from documentation (2016/01/24)
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+            - protobuf-compiler
+            - libprotobuf-dev
+            - libcurl4-openssl-dev
+            - libboost-all-dev
+            - libjemalloc-dev
+    - os: linux
+      sudo: false
+      compiler: gcc
+      # Minimalist packages list
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+    - os: linux
+      sudo: required
+      dist: trusty
+      compiler: gcc
+      # Packages list from documentation (2016/01/24)
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+            - protobuf-compiler
+            - libprotobuf-dev
+            - libcurl4-openssl-dev
+            - libboost-all-dev
+            - libjemalloc-dev
+    - os: linux
+      sudo: required
+      dist: trusty
+      compiler: gcc
+      # Minimalist packages list
+      addons:
+        apt:
+          packages:
+            - libncurses5-dev
+    - os: osx
+      compiler: clang
   
 cache:
   apt: true
@@ -20,79 +60,16 @@ cache:
     - ~/.npm
     - ~/npm-cache
 
-addons:
-  apt:
-#    sources:
-#      - boost-latest
-    packages:
-      - libncurses5-dev
-#      - protobuf-compiler
-#      - libprotobuf-dev
-#      - libcurl4-openssl-dev
-#      - libboost1.54-all-dev
-#      - libjemalloc-dev
-
-matrix:
-  include:
-    - os: linux
-      sudo: false
-      compiler: gcc
-      env:
-        - DESCRIPTION="Ubuntu (Precise) / Gcc / Libraries from apt-get"
-      # Packages list from documentation (2016/01/24)
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-            - protobuf-compiler
-            - libprotobuf-dev
-            - libcurl4-openssl-dev
-            - libboost-all-dev
-            - libjemalloc-dev
-    - os: linux
-      dist: trusty
-      sudo: required
-      compiler: gcc
-      env:
-        - DESCRIPTION="Ubuntu (Trusty) / Gcc / Libraries from apt-get"
-      # Packages list from documentation (2016/01/24)
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-            - protobuf-compiler
-            - libprotobuf-dev
-            - libcurl4-openssl-dev
-            - libboost-all-dev
-            - libjemalloc-dev
-    - os: linux
-      dist: trusty
-      sudo: required
-      compiler: gcc
-      env:
-        - DESCRIPTION="Ubuntu (Trusty) / Gcc / External libraries"
-      # Minimalist packages list
-      addons:
-        apt:
-          packages:
-            - libncurses5-dev
-    - os: osx
-      compiler: clang
-      env:
-        - DESCRIPTION="OS X / Clang"
-
 before_install:
-  - echo "Working on :" $DESCRIPTION
   - |
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       nvm install stable;
       npm install -g npm@2;
-      fi
     elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew update >/dev/null;
       brew uninstall node;
       brew install node;
-      fi
+    fi
 #      --without-npm;
 #      echo prefix=~/.node >> ~/.npmrc;
 #      ( curl -L https://www.npmjs.com/install.sh | sh );
