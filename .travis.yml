@@ -6,8 +6,12 @@ compiler:
   - gcc
 #  - clang
 env:
-  - DEBUG=1
-#  - DEBUG=0
+  global:
+    - DESCRIPTION="Ubuntu (Precise) / Gcc / External libraries"
+    - DEBUG=1
+  matrix:
+#    - DEBUG=1
+#    - DEBUG=0
   
 cache:
   apt: true
@@ -33,6 +37,8 @@ matrix:
     - os: linux
       sudo: false
       compiler: gcc
+      env:
+        - DESCRIPTION="Ubuntu (Precise) / Gcc / Libraries from apt-get"
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -47,6 +53,8 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
+      env:
+        - DESCRIPTION="Ubuntu (Trusty) / Gcc / Libraries from apt-get"
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -61,6 +69,8 @@ matrix:
       dist: trusty
       sudo: required
       compiler: gcc
+      env:
+        - DESCRIPTION="Ubuntu (Trusty) / Gcc / External libraries"
       # Minimalist packages list
       addons:
         apt:
@@ -68,19 +78,25 @@ matrix:
             - libncurses5-dev
     - os: osx
       compiler: clang
+      env:
+        - DESCRIPTION="OS X / Clang"
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+  - echo "Working on :" $DESCRIPTION
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       nvm install stable;
       npm install -g npm@2;
       fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    elif [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       brew update >/dev/null;
       brew uninstall node;
-      brew install node --without-npm;
-      echo prefix=~/.node >> ~/.npmrc;
-      ( curl -L https://www.npmjs.com/install.sh | sh );
+      brew install node;
       fi
+#      --without-npm;
+#      echo prefix=~/.node >> ~/.npmrc;
+#      ( curl -L https://www.npmjs.com/install.sh | sh );
+#      fi
 
 # Install build dependencies
 install:
@@ -89,7 +105,7 @@ install:
 
 # Build script
 script:
-  - make test-deps DEBUG=$DEBUG -j 3 && ./test/run --jobs 3
+  - make test-deps DEBUG=$DEBUG -j 3 && ./test/run --jobs 3 --verbose
 
 #notifications:
   # Email commit author only on build status change
