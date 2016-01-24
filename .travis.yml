@@ -1,5 +1,8 @@
 # Environment
 language: cpp
+compiler:
+  - gcc
+  - clang
 env:
   global:
     - DEBUG=1
@@ -8,7 +11,6 @@ matrix:
   include:
     - os: linux
       sudo: false
-      compiler: gcc
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -21,7 +23,6 @@ matrix:
             - libjemalloc-dev
     - os: linux
       sudo: false
-      compiler: gcc
       # Minimalist packages list
       addons:
         apt:
@@ -30,7 +31,6 @@ matrix:
     - os: linux
       sudo: required
       dist: trusty
-      compiler: gcc
       # Packages list from documentation (2016/01/24)
       addons:
         apt:
@@ -44,14 +44,12 @@ matrix:
     - os: linux
       sudo: required
       dist: trusty
-      compiler: gcc
       # Minimalist packages list
       addons:
         apt:
           packages:
             - libncurses5-dev
     - os: osx
-      compiler: clang
   
 cache:
   apt: true
