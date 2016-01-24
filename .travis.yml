@@ -12,15 +12,12 @@ env:
 addons:
   apt:
     packages:
-      - python
       - protobuf-compiler
       - libprotobuf-dev
       - libcurl4-openssl-dev
       - libboost-all-dev
       - libncurses5-dev
       - libjemalloc-dev
-      - wget
-      - m4
 
 # Install build dependencies
 before_script:
@@ -30,7 +27,8 @@ before_script:
 #  - npm install -g less
 #  - npm install -g coffee-script
 #  - npm install -g handlebars
-  - npm install -g mocha
+#  - npm install -g mocha
+  - npm install -g coffee
 
   # we need a custom ppa for latest boost libs (1.46, which is on
   # Travis, doesn't work with Clang and C++ 11)
