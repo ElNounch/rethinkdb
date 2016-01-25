@@ -2,10 +2,10 @@
 language: cpp
 sudo: false
 os:
-#  - linux
+  - linux
   - osx
 compiler:
-#  - gcc
+  - gcc
   - clang
 env:
   global:
@@ -35,28 +35,39 @@ cache:
 
 before_install:
   - |
-    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ `nvm --version 2>/dev/null` == "" ]]; then
       # Install nvm
       git clone https://github.com/creationix/nvm.git ~/.nvm && pushd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && popd
       . ~/.nvm/nvm.sh
     fi
     # Install latest stable Node.js
-    nvm install stable
+    nvm install node
     # Install latest version 2 of npm
     npm install -g npm@2
 
 # Install build dependencies
 install:
   - |
-    if [[ ( "$CC" == "gcc" ) && ( `ccache --version 2>/dev/null` != "" ) ]]; then
-      export CCACHE_OPT=--ccache
+    # Try to ensure ccache availability
+    if [[ `ccache --version 2>/dev/null` == "" ]]; then
+      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+        brew install --HEAD ccache
+      fi
     fi
-    ./configure --allow-fetch $CCACHE_OPT
+    if [[ `ccache --version 2>/dev/null` != "" ]]; then
+      export CCACHE_SWITCH=--ccache
+      if [[ "$COMPILER" == "clang" ]]; then
+        export CCACHE_CPP2=yes
+      fi
+      ccache --version
+    fi
+    ./configure --allow-fetch $CCACHE_SWITCH
   - make support DEBUG=$DEBUG -j 3
 
 # Build script
 script:
-  - make test-deps DEBUG=$DEBUG --jobs 3 && make test
+  - make test-deps DEBUG=$DEBUG --jobs 3
+#  && make test
 
 #notifications:
   # Email commit author only on build status change
