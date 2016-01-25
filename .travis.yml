@@ -28,9 +28,9 @@ addons:
 cache:
   ccache: true
   directories:
-    - ~/.npm
     - external
     - precompiled
+    - ~/.ccache
 
 before_install:
   - |
@@ -49,15 +49,21 @@ before_install:
 install:
   - |
     if [[ `ccache --version 2>/dev/null` != "" ]]; then
+      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+        brew update
+        brew install --HEAD ccache
+      fi
+    fi
+    if [[ `ccache --version 2>/dev/null` != "" ]]; then
       export CCACHE_SWITCH=--ccache
       ccache --version
     fi
-    ./configure --allow-fetch $CCACHE_SWITCH
+  - ./configure --allow-fetch $CCACHE_SWITCH
   - make support DEBUG=$DEBUG -j 3
 
 # Build script
 script:
-  - make test-deps DEBUG=$DEBUG --jobs 3
+  - make test-deps DEBUG=$DEBUG --jobs 3 && ccache --show-stats
 #  && make test
 
 #notifications:
