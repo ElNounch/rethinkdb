@@ -26,15 +26,15 @@ addons:
         - libjemalloc-dev
   
 cache:
-  apt: true
   ccache: true
   directories:
     - ~/.npm
-    - ~/npm-cache
-    - $TRAVIS_BUILD_DIR/node_modules
+    - external
+    - precompiled
 
 before_install:
   - |
+    echo run_second_cpp = true >> ~/.ccache/ccache.conf
     if [[ `nvm --version 2>/dev/null` == "" ]]; then
       # Install nvm
       git clone https://github.com/creationix/nvm.git ~/.nvm && pushd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && popd
@@ -48,17 +48,8 @@ before_install:
 # Install build dependencies
 install:
   - |
-    # Try to ensure ccache availability
-    if [[ `ccache --version 2>/dev/null` == "" ]]; then
-      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        brew install --HEAD ccache
-      fi
-    fi
     if [[ `ccache --version 2>/dev/null` != "" ]]; then
       export CCACHE_SWITCH=--ccache
-      if [[ "$COMPILER" == "clang" ]]; then
-        export CCACHE_CPP2=yes
-      fi
       ccache --version
     fi
     ./configure --allow-fetch $CCACHE_SWITCH
