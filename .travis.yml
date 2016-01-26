@@ -3,7 +3,7 @@ language: cpp
 sudo: false
 os:
   - linux
-  - osx
+#  - osx
 compiler:
   - g++
   - clang
@@ -57,10 +57,10 @@ cache:
   directories:
     - external
     - precompiled
+    - build/external
 
 before_install:
   - |
-    echo run_second_cpp = true >> ~/.ccache/ccache.conf
     if [[ `nvm --version 2>/dev/null` == "" ]]; then
       # Install nvm
       git clone https://github.com/creationix/nvm.git ~/.nvm && pushd ~/.nvm && git checkout `git describe --abbrev=0 --tags` && popd
@@ -89,12 +89,21 @@ install:
       fi
     fi
   - ./configure --allow-fetch $CCACHE_SWITCH
-  - make support DEBUG=$DEBUG -j 3
+  - make support DEBUG=$DEBUG --jobs 3
 
 # Build script
 script:
-  - make test-deps DEBUG=$DEBUG --jobs 3 && ccache --show-stats
+  - make test-deps DEBUG=$DEBUG --jobs 3
 #  && make test
+
+after_script:
+  - |
+    if [[ "$CCACHE_SWITCH" != "" ]]; then
+      ccache --show-stats
+    fi
+
+before_cache:
+  - rm -f build/external/*/install.witness
 
 #notifications:
   # Email commit author only on build status change
