@@ -53,11 +53,11 @@ addons:
         - libjemalloc-dev
   
 cache:
-  ccache: true
   directories:
+    - $HOME/.ccache
     - external
-    - precompiled
     - build/external
+#    - precompiled
 
 before_install:
   - |
@@ -74,19 +74,9 @@ before_install:
 # Install build dependencies
 install:
   - |
-    # ccache useless if no inter-build cache
-    if [[ "$CASHER_DIR" != "" ]]; then
-      # try to setup ccache if misssing
-      if [[ `ccache --version 2>/dev/null` == "" ]]; then
-        if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-          brew update
-          brew install --HEAD ccache
-        fi
-      fi
-      if [[ `ccache --version 2>/dev/null` != "" ]]; then
-        export CCACHE_SWITCH=--ccache
-        ccache --version
-      fi
+    if [[ `ccache --version 2>/dev/null` != "" ]]; then
+      export CCACHE_SWITCH=--ccache
+      ccache --version
     fi
   - ./configure --allow-fetch $CCACHE_SWITCH
   - make support DEBUG=$DEBUG --jobs 3
@@ -103,7 +93,7 @@ after_script:
     fi
 
 before_cache:
-  - rm -f build/external/*/install.witness
+  - rm -f build/external/*/install.witness build/external/*.log
 
 #notifications:
   # Email commit author only on build status change
