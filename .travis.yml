@@ -14,6 +14,33 @@ env:
     - TEST=unit
     - TEST=!unit
 
+matrix:
+  include:
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: g++
+      env:
+      - TEST=unit
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: g++
+      env:
+      - TEST=!unit
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: clang
+      env:
+      - TEST=unit
+    - os: linux
+      dist: trusty
+      sudo: required
+      compiler: clang
+      env:
+      - TEST=!unit
+
 addons:
     apt:
       packages:
