@@ -5,7 +5,7 @@ os:
   - linux
   - osx
 compiler:
-  - gcc
+  - g++
   - clang
 env:
   global:
@@ -28,9 +28,7 @@ addons:
 cache:
   ccache: true
   directories:
-    - external
     - precompiled
-    - ~/.ccache
 
 before_install:
   - |
@@ -48,15 +46,19 @@ before_install:
 # Install build dependencies
 install:
   - |
-    if [[ `ccache --version 2>/dev/null` != "" ]]; then
-      if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        brew update
-        brew install --HEAD ccache
+    # ccache useless if no inter-build cache
+    if [[ "$CASHER_DIR" != "" ]]; then
+      # try to setup ccache if misssing
+      if [[ `ccache --version 2>/dev/null` == "" ]]; then
+        if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+          brew update
+          brew install --HEAD ccache
+        fi
       fi
-    fi
-    if [[ `ccache --version 2>/dev/null` != "" ]]; then
-      export CCACHE_SWITCH=--ccache
-      ccache --version
+      if [[ `ccache --version 2>/dev/null` != "" ]]; then
+        export CCACHE_SWITCH=--ccache
+        ccache --version
+      fi
     fi
   - ./configure --allow-fetch $CCACHE_SWITCH
   - make support DEBUG=$DEBUG -j 3
