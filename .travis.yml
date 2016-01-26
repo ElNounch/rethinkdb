@@ -28,6 +28,7 @@ addons:
 cache:
   ccache: true
   directories:
+    - external
     - precompiled
 
 before_install:
