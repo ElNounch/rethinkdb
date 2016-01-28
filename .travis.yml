@@ -7,6 +7,9 @@ compiler:
 env:
   - DEBUG=1
 #  - DEBUG=0
+dist:
+  - precise
+  - trusty
 
 cache:
   directories:
@@ -17,7 +20,7 @@ cache:
 install:
   - sudo apt-get install apt-transport-https
   - sudo add-apt-repository https://deb.nodesource.com/node_0.12
-  - sudo curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+  - sudo curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
   - sudo apt-get update
   - sudo apt-get install --assume-yes --no-install-recommends --quiet \
       nodejs=0.12.* \
