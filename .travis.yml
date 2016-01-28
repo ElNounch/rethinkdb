@@ -1,5 +1,6 @@
 # Environment
 language: cpp
+sudo: required
 compiler:
   - gcc
 #  - clang
@@ -25,7 +26,9 @@ cache:
 
 install:
 #  - export PATH="/usr/lib/ccache:$PATH"
+  # Node.js packages on Ubuntu renames 'node' to 'nodejs'
   - ln -s /usr/bin/nodejs /usr/bin/node
+#  - mkdir ~/.intercept && ln -s /usr/bin/nodejs ~/.intercept/node && export PATH="~/.intercept:$PATH"
   - npm install -g coffee-script@1.10.0
   - npm install -g browserify@12.0.1
 #  - npm install -g bluebird@2.9.32
