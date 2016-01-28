@@ -8,16 +8,6 @@ env:
   - DEBUG=1
 #  - DEBUG=0
 
-addons:
-  apt:
-    packages:
-      nodejs=0.12.*
-      libssl-dev
-      protobuf-compiler
-      libprotobuf-dev
-      libcurl4-openssl-dev
-      libjemalloc-dev
-
 cache:
   directories:
     - $HOME/.ccache
@@ -25,15 +15,23 @@ cache:
     - ~/.npm
 
 install:
-#  - export PATH="/usr/lib/ccache:$PATH"
+  - sudo apt-get install apt-transport-https
+  - sudo add-apt-repository https://deb.nodesource.com/node_0.12
+  - sudo curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add -
+  - sudo apt-get update
+  - sudo apt-get install --assume-yes --no-install-recommends --quiet \
+      nodejs=0.12.* \
+      protobuf-compiler \
+      libprotobuf-dev \
+      libcurl4-openssl-dev \
+      libjemalloc-dev
   # Node.js packages on Ubuntu renames 'node' to 'nodejs'
-  - ln -s /usr/bin/nodejs /usr/bin/node
-#  - mkdir ~/.intercept && ln -s /usr/bin/nodejs ~/.intercept/node && export PATH="~/.intercept:$PATH"
-  - npm install -g coffee-script@1.10.0
-  - npm install -g browserify@12.0.1
+  - sudo ln -s /usr/bin/nodejs /usr/bin/node
+  - sudo npm install -g coffee-script@1.10.0
+  - sudo npm install -g browserify@12.0.1
 #  - npm install -g bluebird@2.9.32
   - ./configure --ccache
-  - make support
+  - PATH="/usr/lib/ccache:$PATH" make support
 
 script:
   - make DEBUG=$DEBUG && make test
