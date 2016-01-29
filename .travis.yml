@@ -29,11 +29,11 @@ install:
   - sudo add-apt-repository https://deb.nodesource.com/node_0.12
   - curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
   - sudo apt-get update
-  - sudo apt-get install --assume-yes --no-install-recommends --quiet \
-      nodejs=0.12.* \
-      protobuf-compiler \
-      libprotobuf-dev \
-      libcurl4-openssl-dev \
+  - sudo apt-get install --assume-yes --no-install-recommends --quiet
+      nodejs=0.12.*
+      protobuf-compiler
+      libprotobuf-dev
+      libcurl4-openssl-dev
       libjemalloc-dev
   # Node.js packages on Ubuntu renames 'node' to 'nodejs'
   - sudo ln -s /usr/bin/nodejs /usr/bin/node
