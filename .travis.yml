@@ -1,5 +1,6 @@
 # Environment
 language: cpp
+sudo: false
 compiler:
   - gcc
 #  - clang
@@ -10,6 +11,16 @@ env:
 cache:
   ccache: true
 
+addons:
+  apt:
+    sources:
+    packages:
+      - libboost-all-dev
+      - libprotobuf-dev
+      - protobuf-compiler
+      - libcurl4-openssl-dev
+      - libjemalloc-dev=3.*
+
 # Install build dependencies
 before_script:
   - ./configure --allow-fetch --ccache
@@ -19,9 +30,9 @@ before_script:
 # Build script
 script:
   - make --jobs 3 test-deps DEBUG=$DEBUG
-#  && make test RUN_TEST_ARGS='-j3 -w-'
+#  && test/run
 
-after script:
+after_script:
   - ccache -s
 
 # notifications:
