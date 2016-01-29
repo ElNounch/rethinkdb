@@ -13,12 +13,16 @@ cache:
 # Install build dependencies
 before_script:
   - ./configure --allow-fetch --ccache
+  - ccache -z
   - make --jobs 3 support DEBUG=$DEBUG
 
 # Build script
 script:
   - make --jobs 3 test-deps DEBUG=$DEBUG
 #  && make test RUN_TEST_ARGS='-j3 -w-'
+
+after script:
+  - ccache -s
 
 # notifications:
   # # Email commit author only on build status change
