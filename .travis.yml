@@ -29,12 +29,14 @@ install:
   - sudo add-apt-repository https://deb.nodesource.com/node_0.12
   - curl -s https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
   - sudo apt-get update
+  - apt-cache search libv8
   - sudo apt-get install --assume-yes --no-install-recommends --quiet
       nodejs=0.12.*
+      libboost-all-dev
       protobuf-compiler
       libprotobuf-dev
       libcurl4-openssl-dev
-      libjemalloc-dev
+      libjemalloc-dev=3.*
   - sudo npm install -g coffee-script@1.10.0
   - sudo npm install -g browserify@12.0.1
 #  - npm install -g bluebird@2.9.32
