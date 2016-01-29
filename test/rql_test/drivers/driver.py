@@ -607,27 +607,27 @@ def partial(expected, ordered=False, partial=True):
         'partial can only work on dicts, lists, or tuples, got: %s (%r)' % (type(expected).__name__, expected)
     return OptionsBox(expected, options)
 
-def fetch(cursor, limit=None, timeout=1):
+def fetch(cursor, limit=None, timeout=0.2):
     '''Pull items from a cursor'''
-    
+
     # -- input validation
-    
+
     if limit is not None:
         try:
             limit = int(limit)
             assert limit > 0
         except Exception:
             raise ValueError('invalid value for limit: %r' % limit)
-    
+
     if timeout not in (None, 0):
         try:
             timeout = float(timeout)
             assert timeout > 0
         except Exception:
             raise ValueError('invalid value for timeout: %r' % timeout)
-    
-    # --
-    
+
+    # -- collect results
+
     result = []
     deadline = time.time() + timeout if timeout else None
     while (deadline is None) or (time.time() < deadline):
